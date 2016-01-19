@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>远古时代的ajax</title>
+</head>
+<script type="text/javascript">
+function vote(){
+	//创建img标签
+	var hh = document.createElement('img');
+	/* hh.setAttribute('src', './ly.jpg');
+	document.getElementById('progresss').appendChild(hh); */
+	
+	//设置src属性，浏览器将会请求src对象的资源
+	hh.setAttribute('src', './050_01.php');
+}
+</script>
+<body>
+	<div>
+		<p><img src="wyf.jpg"></p>
+		<p><a href="050_01.php">投票方法1</a></p>
+		<p><input type="button" value="投票方法2" onclick="vote();"></p>
+	</div>
+	<div id="progresss"></div>
+</body>
+</html>
