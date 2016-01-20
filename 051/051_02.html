@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ajax快速入门</title>
+</head>
+<script>
+function createXHR(){
+	var xhr = null;
+	if(window.XMLHttpRequest){
+		xhr = new XMLHttpRequest();
+	} else if (window.ActiveXObject) {
+		xhr = new ActiveXObject('Microsoft.XMLHttp');
+	}
+	return xhr;
+}
+
+function vote(){
+	//1.制定xhr
+	var xhr = new createXHR();
+	//2.打开连接
+	xhr.open('GET', './051_02_vote.php', true); //异步
+	//3.发请求
+	xhr.send(null);
+	//绑定状态变化的回调函数
+	xhr.onreadystatechange = function(){
+		if (this.readyState == 4){
+			//alert('请求完成了'); //是否投票成功还要做判断
+			if (this.responseText == '0'){
+				document.getElementById('progress').innerHTML = '投票失败';
+			} else {
+				document.getElementById('progress').innerHTML = '投票成功';
+			}
+		}
+		/* var pg = document.getElementById('progress');
+		pg.innerHTML = pg.innerHTML + '状态现在变成'+this.readyState+'<br />'; */
+	}
+	alert('hello');
+}
+</script>
+<body>
+	<div>
+		<p><img src="wyf.jpg"></p>
+		<p><input type="button" value="投票方法2" onclick="vote();"></p>
+	</div>
+	<div id="progress"></div>
+</body>
+</html>
