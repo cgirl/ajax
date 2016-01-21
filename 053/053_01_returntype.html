@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ajax返回值之XML</title>
+</head>
+<script>
+function createXHR(){
+	var xhr = null;
+	if (window.XMLHttpRequest){
+		xhr = new XMLHttpRequest();
+	} else if (window.ActiveXObject){
+		xhr = new ActiveXObject('Microsoft.XMLHttp');
+	}
+	
+	return xhr;
+}
+
+function test1(){
+	var xhr = new createXHR();
+	xhr.open('GET', '053_01_returntype.php', true);
+	xhr.onreadystatechange = function(){
+		if (this.readyState == 4){
+			var xmldom = this.responseXML;
+			//alert(xmldom);
+			var chs = xmldom.getElementsByTagName("book")[0];
+			document.getElementById('btitle').value = chs.childNodes.item(1).firstChild.wholeText;
+			document.getElementById('bintro').value = chs.childNodes.item(3).firstChild.wholeText;
+			//alert(chs[0].NodeValue);
+		}
+	}
+	xhr.send(null);
+}
+</script>
+<body>
+	<input type="text" id="btitle" /><br />
+	<input type="text" id="bintro" /><br />
+	
+	<input type="button" value="测试返回值1" onclick="test1()">
+	<input type="button" value="测试返回值2" onclick="test2()">
+</body>
+</html>
