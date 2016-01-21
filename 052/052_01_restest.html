@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>XHR详细探讨与POST数据</title>
+</head>
+<script>
+function createXHR(){
+	var xhr = null;
+	if(window.XMLHttpRequest){
+		xhr = new XMLHttpRequest();
+	} else if (window.ActiveXObject) {
+		xhr = new ActiveXObject('Microsoft.XMLHttp');
+	}
+	return xhr;
+}
+
+//1.制定xhr，作为全局，方便abort使用
+var xhr = new createXHR();
+
+function vote(){
+	//2.打开连接
+	xhr.open('GET', './052_01_vote.php', true); //异步
+	//3.发请求
+	xhr.send(null);
+	//绑定状态变化的回调函数
+	xhr.onreadystatechange = function(){
+		if (this.readyState == 4 && this.status == 200){
+			var str = '';
+			str = '状态码是：'+this.status+'<br />';
+			str = str + '状态文字是：' + this.statusText+'<br />';
+			str = str + '返回类型是：' + this.getResponseHeader('Content-type')+'<br />';
+			str = str + '返回的主体长度：'+this.getResponseHeader('Content-length')+'<br />';
+			str = str + '返回的主体内容：'+this.responseText+'<br />';
+			str = str + '所有头信息' + this.getAllResponseHeaders()+'<br />';
+			document.getElementById('progress').innerHTML = str;
+		}
+		alert('2');
+	}
+}
+
+function xhrstop(){
+	xhr.abort();
+}
+</script>
+<body>
+	<div>
+		<p><img src="wyf.jpg"></p>
+		<p><input type="button" value="测试各种返回值" onclick="vote();"></p>
+		<p><input type="button" value="中断" onclick="xhrstop();"></p>
+	</div>
+	<div id="progress"></div>
+</body>
+</html>

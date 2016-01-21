@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>XHR详细探讨与POST数据</title>
+</head>
+<script>
+function createXHR(){
+	var xhr = null;
+	if(window.XMLHttpRequest){
+		xhr = new XMLHttpRequest();
+	} else if (window.ActiveXObject) {
+		xhr = new ActiveXObject('Microsoft.XMLHttp');
+	}
+	return xhr;
+}
+
+function ajaxreg(){
+	/*
+	 	步骤：
+	  	1.收集表单的数据
+	  	2.打开到后台服务器连接（POST连接）
+	  	3.发送数据
+	  	4.监听，回调等
+	 */
+	//0制造xhr
+	var xhr = new createXHR();
+	//1打开post连接
+	xhr.open('POST', './052_02_ajaxreg.php', true);
+	//绑定
+	xhr.onreadystatechange = function (){
+		if (this.readyState==4){
+			alert(this.responseText);
+		}
+	}
+	//2收集表单数据
+	var un = document.getElementsByName('username')[0].value;
+	var pw = document.getElementsByName('password')[0].value;
+	//3send
+	//alert('username='+un+'&password='+pw);
+	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	xhr.send('username='+un+'&password='+pw);
+	//4回调
+	
+	
+	return false;
+}
+
+</script>
+<body>
+	<h1>ajax注册</h1>
+	<div id="regres"></div>
+	<form action="052_02_ajaxreg.php" method="post" target="regzone" onsubmit="return ajaxreg()">
+		<p>用户：<input type="text" name="username"></p>
+		<p>密码：<input type="text" name="password"></p>
+		<p><input type="submit" value="提交"></p>
+	</form>
+	<iframe width="0" height="0" frameborder="0" name="regzone"></iframe>
+</body>
+</html>
