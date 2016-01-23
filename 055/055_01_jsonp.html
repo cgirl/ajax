@@ -7,11 +7,26 @@
 <script>
 function search1(){
 	var kw = document.getElementsByName('keywords')[0].value;
-	var url=
+	var url = 'http://suggestion.baidu.com/su?wd=' + kw + '&p=3&cb=aa&t=1324271669786';
+	
+	searchKey = document.createElement('script');
+	searchKey.setAttribute('content-type', 'text/javascript');
+	searchKey.setAttribute('src', url);
+	
+	document.getElementsByTagName('head')[0].appendChild(searchKey);
+}
+
+function aa(res){
+	var searchres = '';
+	for(var i in res.s){
+		searchres += res.s[i]+'<br />';
+	}
+	document.getElementById('search-result').innerHTML = searchres;
 }
 </script>
 <body>
-	<input type="button" name="keywords"/>
+	<input type="text" name="keywords"/>
 	<input type="button" value="搜索" onclick="search1()"/>
+	<div id="search-result"></div>
 </body>
 </html>
