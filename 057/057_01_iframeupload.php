@@ -12,6 +12,6 @@ $errdesc = $_FILES['pic']['error']?'upload failed!':'upload success!';
 
 echo '<script>'.
 'parent.document.getElementsByTagName("h2")[0].innerHTML="'.$errdesc.
-'";parent.document.getElementById("progress").innerHTML=""</script>';
+'";parent.document.getElementById("progress").innerHTML="'.$errdesc.'"</script>';
 
 ?>
