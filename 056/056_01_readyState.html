@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>异步原理</title>
+</head>
+<script type="text/javascript">
+function createXHR(){
+	var xhr = null;
+	if(window.XMLHttpRequest){
+		xhr = new XMLHttpRequest();
+	} else if (window.ActiveXObject){
+		xhr = new ActiveXObject('Microsoft.XMLHttp');
+	}
+	
+	return xhr;
+}
+
+var xhr = new createXHR();
+xhr.open('get', '056_01_vote.php', false);
+xhr.onreadystatechange = function(){
+	if (this.readyState == 4){
+		alert(this.responseText);
+	}
+}
+xhr.send(null);
+
+</script>
+<body>
+	<div style="width:200px;height:200px;background:blue"></div>
+</body>
+</html>
