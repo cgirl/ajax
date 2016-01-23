@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>FormData API介绍</title>
+</head>
+<script>
+function selFile(){
+	//创建FormData对象
+	var fd = new FormData();
+	//获取文件对象
+	var pic = document.getElementsByTagName('input')[0].files[0];
+	//将文件内容添加到表单数据里
+	fd.append('pic', pic);
+	
+	xhr = new XMLHttpRequest();
+	xhr.open('POST', '058_04_html5upload.php', true);
+	xhr.onreadystatechange = function (){
+		if(this.readyState == 4){
+			document.getElementById('debug').innerHTML = this.responseText;
+		}
+	}
+	xhr.send(fd);
+}
+</script>
+<body>
+	<input type="file" name="pic" onchange="selFile()"/>
+	<div id="debug">
+	</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>FormDataAPI介绍</title>
+</head>
+<script type="text/javascript">
+/*
+formData表单数据对象
+这是在html5中新增的一个Api，他能以表单对象做参数，自动把表单的数据打包，当
+ajax发送数据时，发送这些formData，达到发送表单内个数据项的目的。
+
+下例为第2种用法
+*/
+function send(){
+	var fd2 = new FormData();
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', '058_01_formdata.php', true);
+	xhr.onreadystatechange = function(){
+		if(this.readyState == 4){
+			document.getElementById('debug').innerHTML = this.responseText;
+		}
+	}
+	
+	//看下面这个例子，说明formData对象既可以从表单生成数据，也可以手动append
+	fd2.append('username', 'zhangsan');
+	fd2.append('age', '23');
+	xhr.send(fd2);
+}
+</script>
+<body>
+	<form action="" id="tform">
+		<p>姓名：<input type="text" name="username"/></p>
+		<p>年龄：<input type="text" name="age"/></p>
+		<p>邮箱：<input type="text" name="email"/></p>
+		<p>性别：<input type="text" name="gender"/></p>
+		<input type="button" value="ajax发送" onclick="send()"/>
+	</form>
+	<div id="debug"></div>
+</body>
+</html>
