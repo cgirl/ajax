@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ajax大文件切割上传</title>
+</head>
+<script type="text/javascript">
+/*
+用到的API
+file-->继承自-->Blob
+Blob有slice方法，可以截取二进制对象的一部分
+
+思路：
+截取10M，上传，判断文件有没有截取完毕
+while 还有数据
+{
+	截取，
+	ajax上传
+}
+该代码有问题，进度条在全部发送完毕之后，直接展示进度条100%，js引擎加载的问题导致的，引擎单进程，
+其while循环执行完毕，统一进行页面渲染，所以导致最后只显示一次100%
+*/
+function sendFile(){
+	const MAX_LENGTH = 10*1024*1024; //常量，不可写
+	var start = 0;
+	var end = start+MAX_LENGTH;
+	var blob = null;
+	var xhr = null;
+	var uploadSize = 0;
+	
+	var mov = document.getElementsByName('pic')[0].files[0];
+	//console.log(pic);
+	var totalSize = mov.size;
+	
+	while (start < totalSize){
+		blob = mov.slice(start, end);
+		fd = new FormData();
+		fd.append('part', blob);
+		
+		xhr = new XMLHttpRequest();
+		xhr.open('POST', '060_01_sliceupload.php', false);
+		//console.log(totalSize);
+		/* 同步状态下，onprogress事件没有机会执行，该事件是在readyState=3的时候被触发；
+		   同步状态下，会一直阻塞在send后的2状态下，直到传输完成，状态直接变为4
+			xhr.upload.onprogress = function (ev){
+			uploadSize+=ev.loaded;
+			console.log(ev.loaded);
+			var percent = 100*(uploadSize)/totalSize;
+			alert(percent);
+			document.getElementById('bar').style.width = percent+'%';
+		} */
+		//console.log(blob);
+		xhr.send(fd);
+		
+		start = end;
+		end = start + MAX_LENGTH;
+		var percent = 100*end/totalSize<=100?100*end/totalSize:100;
+		console.log(percent);
+		document.getElementById('bar').style.width = parseInt(percent) +'%';
+		document.getElementById('bar').innerHTML = parseInt(percent) + '%';
+	}
+}
+</script>
+<style type="text/css">
+#progress{
+	width:500px;
+	height:30px;
+	border:1px solid green;
+}
+
+#bar{
+	width:0%;
+	height:100%;
+	background:green;
+}
+
+</style>
+<body>
+	<h1>html5大文件切割上传</h1>
+	<div id="progress"><div id="bar"></div></div>
+	<p><input type="file" name="pic" onchange="sendFile()"/></p>
+</body>
+</html>
