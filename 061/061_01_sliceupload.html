@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ajax大文件切割上传</title>
+</head>
+<script type="text/javascript">
+/*
+用到的API
+file-->继承自-->Blob
+Blob有slice方法，可以截取二进制对象的一部分
+
+思路：
+截取10M，上传，判断文件有没有截取完毕
+while 还有数据
+{
+	截取，
+	ajax上传
+}
+该代码有问题，进度条在全部发送完毕之后，直接展示进度条100%，js引擎加载的问题导致的，引擎单进程，
+其while循环执行完毕，统一进行页面渲染，所以导致最后只显示一次100%
+
+解决：
+用定时器，不断调用上传方法
+*/
+
+xhr = new XMLHttpRequest();
+
+var clock = null;
+function fire(){
+	clock = window.setInterval(sendFile, 1000);
+}
+
+//闭包计数器
+var sendFile = (function(){
+	const MAX_LENGTH = 10*1024*1024; //每次切10M
+	var start = 0;
+	var end = start+MAX_LENGTH;
+	var sending = false; //标志上一块有没有发送完毕
+	var blob = null;
+	var fd = new FormData();
+	var percent = 0;
+	
+	return (function (){
+		if (sending == true){
+			return;
+		}
+		var mov = document.getElementsByName('pic')[0].files[0];
+		//如果start>=mov.size就结束了
+		if (start >= mov.size){
+			clearInterval(clock);
+			return ;
+		}
+		
+		blob = mov.slice(start, end);
+		fd.append('part', blob);
+		fileUpload(fd);
+		sending = false;
+		start = end;
+		end = start + MAX_LENGTH;
+		
+		percent = 100*end/mov.size<=100?100*end/mov.size:100;
+		document.getElementById('bar').style.width = percent+'%';
+		document.getElementById('bar').innerHTML = parseInt(percent)+'%';
+	});
+})();
+
+function fileUpload(fd){
+	xhr.open('POST', '061_01_sliceupload.php', false);
+	xhr.send(fd);
+}
+</script>
+<style type="text/css">
+#progress{
+	width:500px;
+	height:30px;
+	border:1px solid green;
+}
+
+#bar{
+	width:0%;
+	height:100%;
+	background:green;
+}
+
+</style>
+<body>
+	<h1>html5大文件切割上传</h1>
+	<div id="progress"><div id="bar"></div></div>
+	<p><input type="file" name="pic" onchange="fire()"/></p>
+</body>
+</html>
